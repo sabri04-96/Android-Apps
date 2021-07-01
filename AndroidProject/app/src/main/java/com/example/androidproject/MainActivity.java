@@ -1,20 +1,10 @@
 package com.example.androidproject;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.androidproject.classes.Personne;
-import com.example.androidproject.database.DatabaseHelper;
-
-import java.util.List;
+import com.example.androidproject.Database.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,9 +13,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DatabaseHelper db = new DatabaseHelper(this);
-        Personne p = new Personne(1, "sabri", "sabri.fetoui@gmail.com", "22125142", "04/02/1996", "Test123", "user");
-        Personne p1 = new Personne(2, "sabri", "sabri.fetoui@ooredoo.tn", "22125142", "04/02/1996", "Test123", "user");
-        db.addpersonne(p);
+
+        //Personne p = new Personne(1, "sabri", "sabri.fetoui@gmail.com", "22125142", "04/02/1996", "Test123", "user");
+        //Personne p1 = new Personne(2, "sabri", "sabri.fetoui@ooredoo.tn", "22125142", "04/02/1996", "Test123", "user");
+        //db.addpersonne(p);
 
 /*
         // Inserting Contacts
@@ -46,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Name: ", log);
         }
     }
-}*/
+}
    Button btnLogin;
     EditText edtUsername;
     EditText edtPassword;
@@ -86,6 +77,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-
+*/
 
         }}
