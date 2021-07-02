@@ -2,11 +2,21 @@ package com.example.androidproject.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.androidproject.Classes.Administrateur;
+import com.example.androidproject.Classes.Cabine;
+import com.example.androidproject.Classes.Centre;
 import com.example.androidproject.Classes.Medecin;
 import com.example.androidproject.Classes.Patient;
+import com.example.androidproject.Classes.Reservation;
+import com.example.androidproject.Classes.Status;
+import com.example.androidproject.Classes.Vaccin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -219,15 +229,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        //Drop ALL Table if exist
+        db.execSQL(DROP_PATIENT_TABLE);
+        db.execSQL(DROP_ADMINISTRATEUR_TABLE);
+        db.execSQL(DROP_CABINE_TABLE);
+        db.execSQL(DROP_CENTRE_TABLE);
+        db.execSQL(DROP_INFERMIER_TABLE);
+        db.execSQL(DROP_RESERVATION_TABLE);
+        db.execSQL(DROP_VACCIN_TABLE);
+        db.execSQL(DROP_MEDECIN_TABLE);
+        db.execSQL(DROP_STATUS_TABLE);
+
         db.execSQL(CREATE_STATUS_TABLE);
         db.execSQL(CREATE_CENTRE_TABLE);
         db.execSQL(CREATE_ADMIN_TABLE);
         db.execSQL(CREATE_CABINE_TABLE);
-    //    db.execSQL(CREATE_INFERMIER_TABLE);
-        //db.execSQL(CREATE_PATIENT_TABLE);
-        //db.execSQL(CREATE_STATUS_TABLE);
-        //db.execSQL(CREATE_VACCIN_TABLE);
-        //db.execSQL(CREATE_RESERVATION_TABLE);
+        db.execSQL(CREATE_INFERMIER_TABLE);
+        db.execSQL(CREATE_PATIENT_TABLE);
+        db.execSQL(CREATE_MEDECIN_TABLE);
+        db.execSQL(CREATE_VACCIN_TABLE);
+        db.execSQL(CREATE_RESERVATION_TABLE);
     }
 
 
@@ -296,6 +318,89 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //db.close();
     }
 
+    public void addCentre (Centre centre) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CENTRE_NAME, centre.getNom());
+        values.put(COLUMN_CENTRE_EMPLACEMENT, centre.getEmplacement());
+
+
+        // Inserting Row
+        db.insert(TABLE_CENTRE, null, values);
+        //db.close();
+    }
+
+    public void addAdministrateur(Administrateur administrateur)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ADMIN_EMAIL, administrateur.getEmail());
+        values.put(COLUMN_ADMIN_PASSWORD,administrateur.getPassword());
+
+
+    // Inserting Row
+        db.insert(TABLE_ADMINISTRATEUR, null, values);
+    //db.close();
+}
+
+
+public void addCabine(Cabine cabine)
+{
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_CABINE_NAME,cabine.getNom());
+    values.put(COLUMN_CABINE_CENTRE,cabine.getId_centre());
+    // Inserting Row
+    db.insert(TABLE_CENTRE, null, values);
+    //db.close();
+}
+
+
+public void addVaccin(Vaccin vaccin)
+{
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_VACCIN_NAME,vaccin.getNom());
+    values.put(COLUMN_VACCIN_REF,vaccin.getRef());
+    values.put(COLUMN_VACCIN_QTE,vaccin.getQte());
+
+    // Inserting Row
+    db.insert(TABLE_VACCIN, null, values);
+    //db.close();
+
+}
+
+
+public void addStatus(Status status)
+{
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_STATUS_NAME,status.getStatus());
+
+    // Inserting Row
+    db.insert(TABLE_STATUS, null, values);
+    //db.close();
+
+}
+
+
+
+
+public void addReservation(Reservation reservation)
+{
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_RESERVATION_DATE,reservation.getDate());
+    values.put(COLUMN_RESERVATION_INFERMIER_ID,reservation.getId_infermier());
+    values.put(COLUMN_PATIENT_VACCIN_ID,reservation.getId_medecin());
+    values.put(COLUMN_RESERVATION_MEDECIN_ID,reservation.getId_medecin());
+
+    // Inserting Row
+    db.insert(TABLE_RESERVATION, null, values);
+    //db.close();
+
+}
 
 
     /**
@@ -303,21 +408,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      *
      * @return list
      */
-   /* public List<PATIENT> getAllPATIENT() {
+    public List<Patient> getAllPATIENT() {
         // array of columns to fetch
         String[] columns = {
                 COLUMN_PATIENT_ID,
-                COLUMN_PATIENT_NAME,
+                COLUMN_PATIENT_NOM,
+                COLUMN_PATIENT_PRENOM,
                 COLUMN_PATIENT_EMAIL,
                 COLUMN_PATIENT_PASSWORD,
                 COLUMN_PATIENT_PHONE,
                 COLUMN_PATIENT_BIRTHDAY,
-                COLUMN_PATIENT_ROLE
+                COLUMN_PATIENT_NBRVCCN
+
         };
         // sorting orders
         String sortOrder =
-                COLUMN_PATIENT_NAME + " ASC";
-        List<PATIENT> PATIENTList = new ArrayList<PATIENT>();
+                COLUMN_PATIENT_NOM + " ASC";
+        List<Patient> PATIENTList = new ArrayList<Patient>();
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -327,7 +434,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          * SQL query equivalent to this query function is
          * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
          */
-      /*  Cursor cursor = db.query(TABLE_PATIENT, //Table to query
+        Cursor cursor = db.query(TABLE_PATIENT, //Table to query
                 columns,    //columns to return
                 null,        //columns for the WHERE clause
                 null,        //The values for the WHERE clause
@@ -339,13 +446,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Traversing through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                PATIENT PATIENT = new PATIENT();
+                Patient PATIENT = new Patient();
                 PATIENT.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ID))));
-                PATIENT.setName(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NAME)));
+                PATIENT.setName(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
                 PATIENT.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_EMAIL)));
                 PATIENT.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PASSWORD)));
-                PATIENT.setDateBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
-                PATIENT.setRole(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ROLE)));
+                PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
+                PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
                 PATIENT.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PHONE)));
                 // Adding PATIENT record to list
                 PATIENTList.add(PATIENT);
@@ -361,18 +468,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * This method to update PATIENTrecord
      *
-     * @param PATIENT
      */
-    /*public void updatePATIENT(PATIENT PATIENT) {
+    public void updatePATIENT(Patient PATIENT) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_PATIENT_NAME, PATIENT.getName());
+        values.put(COLUMN_PATIENT_NOM, PATIENT.getName());
         values.put(COLUMN_PATIENT_EMAIL, PATIENT.getEmail());
         values.put(COLUMN_PATIENT_PASSWORD, PATIENT.getPassword());
         values.put(COLUMN_PATIENT_BIRTHDAY,PATIENT.getBirthday());
         values.put(COLUMN_PATIENT_PHONE,PATIENT.getPhone());
-        values.put(COLUMN_PATIENT_ROLE,PATIENT.getRole());
+        values.put(COLUMN_PATIENT_NBRVCCN,PATIENT.getNbr_vaccin());
+
 
         // updating row
         db.update(TABLE_PATIENT, values, COLUMN_PATIENT_ID + " = ?",
@@ -385,7 +492,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      *
      * @param PATIENT
      */
-    /*public void deletePATIENT(PATIENT PATIENT) {
+    public void deletePATIENT(Patient PATIENT) {
         SQLiteDatabase db = this.getWritableDatabase();
         // delete PATIENTrecord by id
         db.delete(TABLE_PATIENT, COLUMN_PATIENT_ID + " = ?",
@@ -399,9 +506,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param email
      * @return true/false
      */
-    /*public boolean checkPATIENT(String email) {
+    public boolean checkPatientExistance(String email) {
 
-        // array of columns to fetch
         // array of columns to fetch
         String[] columns = {
                 COLUMN_PATIENT_ID
@@ -420,7 +526,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          * SQL query equivalent to this query function is
          * SELECT PATIENT_id FROM PATIENTWHERE PATIENT_email = 'jack@androidtutorialshub.com';
          */
-       /* Cursor cursor = db.query(TABLE_PATIENT, //Table to query
+       Cursor cursor = db.query(TABLE_PATIENT, //Table to query
                 columns,                    //columns to return
                 selection,                  //columns for the WHERE clause
                 selectionArgs,              //The values for the WHERE clause
@@ -437,7 +543,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return false;
     }
-
+/*
     /**
      * This method to check PATIENT exist or not
      *
@@ -445,7 +551,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param password
      * @return true/false
      */
-/*    public boolean checkPATIENT(String email, String password) {
+    public boolean checkPATIENT(String email, String password) {
 
         // array of columns to fetch
         String[] columns = {
@@ -464,7 +570,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          * SQL query equivalent to this query function is
          * SELECT PATIENT_id FROM PATIENTWHERE PATIENT_email = 'jack@androidtutorialshub.com' AND PATIENT_password = 'qwerty';
          */
-  /*      Cursor cursor = db.query(TABLE_PATIENT, //Table to query
+        Cursor cursor = db.query(TABLE_PATIENT, //Table to query
                 columns,                    //columns to return
                 selection,                  //columns for the WHERE clause
                 selectionArgs,              //The values for the WHERE clause
@@ -483,6 +589,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-   */
+
 }
 
