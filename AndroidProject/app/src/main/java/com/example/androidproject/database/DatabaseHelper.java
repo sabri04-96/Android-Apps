@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.androidproject.Classes.Administrateur;
 import com.example.androidproject.Classes.Cabine;
 import com.example.androidproject.Classes.Centre;
+import com.example.androidproject.Classes.Infermier;
 import com.example.androidproject.Classes.Medecin;
 import com.example.androidproject.Classes.Patient;
 import com.example.androidproject.Classes.Reservation;
@@ -23,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
     // Database Name
-    private static final String DATABASE_NAME = "EvaxApp.db";
+    private static final String DATABASE_NAME = "Evax.db";
 
 
                  /*  Tables list  */
@@ -79,6 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_INFERMIER_ID = "infermier_id";
     private static final String COLUMN_INFERMIER_NOM = "infermier_nom";
     private static final String COLUMN_INFERMIER_PRENOM = "infermier_prenom";
+    private  static final String COLUMN_INFERMIER_CIN = "infermier_cin";
     private static final String COLUMN_INFERMIER_EMAIL = "infermier_email";
     private static final String COLUMN_INFERMIER_DATENAISSANCE = "infermier_datenaissance";
     private static final String COLUMN_INFERMIER_PASSWORD = "infermier_password";
@@ -92,6 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PATIENT_ID = "PATIENT_id";
     private static final String COLUMN_PATIENT_NOM = "PATIENT_nom";
     private static final String COLUMN_PATIENT_PRENOM = "PATIENT_preom";
+    private static final String COLUMN_PATIENT_CIN="PATIENT_cin";
     private static final String COLUMN_PATIENT_PHONE = "PATIENT_phone";
     private static final String COLUMN_PATIENT_EMAIL = "PATIENT_email";
     private static final String COLUMN_PATIENT_BIRTHDAY = "PATIENT_birthday";
@@ -124,6 +127,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_RESERVATION_PATIENT_ID = "RESERVATION_PATIENT_ID";
     private static final String COLUMN_RESERVATION_MEDECIN_ID = "RESERVATION_MEDECIN_ID";
     private static final String COLUMN_RESERVATION_INFERMIER_ID = "RESERVATION_INFERMIER_ID";
+    private static final String COLUMN_RESERVATION_CENTRE_ID = "RESERVATION_CENTRE_ID";
+
 
 
     // create STATUS table sql query
@@ -170,7 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // create Infermier sql query
 
     private String CREATE_INFERMIER_TABLE = "CREATE TABLE " + TABLE_INFERMIER+ "("
-            + COLUMN_INFERMIER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_INFERMIER_NOM + " TEXT,"
+            + COLUMN_INFERMIER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_INFERMIER_NOM + " TEXT,"+COLUMN_INFERMIER_CIN + " INTEGER,"
             + COLUMN_INFERMIER_PRENOM + " TEXT," + COLUMN_INFERMIER_EMAIL + " TEXT,"  + COLUMN_INFERMIER_DATENAISSANCE + " TEXT,"
             + COLUMN_INFERMIER_PASSWORD + " TEXT," + COLUMN_INFERMIER_TELEPHONE + " INTEGER,"  + COLUMN_INFERMIER_MATRICULE + " INTEGER,"
             + COLUMN_INFERMIER_CENTRE_ID + " INTEGER,"
@@ -180,7 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // create Patient sql query
 
     private String CREATE_PATIENT_TABLE = "CREATE TABLE " + TABLE_PATIENT+ "("
-            + COLUMN_PATIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_PATIENT_NOM + " TEXT,"+ COLUMN_PATIENT_PRENOM + " TEXT,"
+            + COLUMN_PATIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_PATIENT_NOM + " TEXT,"+ COLUMN_PATIENT_PRENOM + " TEXT,"+ COLUMN_PATIENT_CIN + " TEXT,"
             + COLUMN_PATIENT_PHONE + " TEXT," + COLUMN_PATIENT_EMAIL + " TEXT,"  + COLUMN_PATIENT_BIRTHDAY + " TEXT,"
             + COLUMN_PATIENT_PASSWORD + " TEXT," + COLUMN_PATIENT_STATUS + " INTEGER,"  + COLUMN_PATIENT_NBRVCCN + " INTEGER,"
             + COLUMN_PATIENT_VACCIN_ID + " INTEGER," + COLUMN_PATIENT_CENTRE_ID + " INTEGER,"
@@ -197,9 +202,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String CREATE_RESERVATION_TABLE = "CREATE TABLE " + TABLE_RESERVATION+ "("
             + COLUMN_RESERVATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_RESERVATION_DATE + " TEXT,"
             + COLUMN_RESERVATION_INFERMIER_ID + " INTEGER," + COLUMN_RESERVATION_MEDECIN_ID + " INTEGER,"  + COLUMN_RESERVATION_PATIENT_ID + " INTEGER,"
+            +COLUMN_RESERVATION_CENTRE_ID+ " INTEGER,"
             + "FOREIGN KEY ("+COLUMN_RESERVATION_INFERMIER_ID+") REFERENCES " + TABLE_INFERMIER + "("+COLUMN_INFERMIER_ID+") ,"
             + "FOREIGN KEY ("+COLUMN_RESERVATION_PATIENT_ID+") REFERENCES " + TABLE_PATIENT + "("+COLUMN_PATIENT_ID+") ,"
-            + "FOREIGN KEY ("+COLUMN_RESERVATION_MEDECIN_ID+") REFERENCES " + TABLE_MEDECIN + "("+COLUMN_MEDECIN_ID+")"+
+            + "FOREIGN KEY ("+COLUMN_RESERVATION_MEDECIN_ID+") REFERENCES " + TABLE_MEDECIN + "("+COLUMN_MEDECIN_ID+"),"
+            + "FOREIGN KEY ("+COLUMN_RESERVATION_CENTRE_ID+") REFERENCES " + TABLE_CENTRE + "("+COLUMN_CENTRE_ID+")"+
             ")";
 
 
@@ -229,7 +236,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         //Drop ALL Table if exist
         db.execSQL(DROP_PATIENT_TABLE);
         db.execSQL(DROP_ADMINISTRATEUR_TABLE);
@@ -283,8 +289,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_PATIENT_NOM, PATIENT.getName());
+        values.put(COLUMN_PATIENT_NOM, PATIENT.getNom());
         values.put(COLUMN_PATIENT_PRENOM, PATIENT.getPrenom());
+        values.put(COLUMN_PATIENT_CIN, PATIENT.getCin());
         values.put(COLUMN_PATIENT_PASSWORD, PATIENT.getPassword());
         values.put(COLUMN_PATIENT_BIRTHDAY, PATIENT.getBirthday());
         values.put(COLUMN_PATIENT_EMAIL, PATIENT.getEmail());
@@ -345,6 +352,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 }
 
 
+    public void addINFERMIER(Infermier INFERMIER) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_INFERMIER_MATRICULE, INFERMIER.getMatricule());
+        values.put(COLUMN_INFERMIER_CIN, INFERMIER.getCin());
+        values.put(COLUMN_INFERMIER_NOM, INFERMIER.getNom());
+        values.put(COLUMN_INFERMIER_PRENOM, INFERMIER.getPrenom());
+        values.put(COLUMN_INFERMIER_PASSWORD, INFERMIER.getPassword());
+        values.put(COLUMN_INFERMIER_DATENAISSANCE, INFERMIER.getDate_naissance());
+        values.put(COLUMN_INFERMIER_EMAIL, INFERMIER.getEmail());
+        values.put(COLUMN_INFERMIER_TELEPHONE,INFERMIER.getTelephone());
+        values.put(COLUMN_INFERMIER_CENTRE_ID,INFERMIER.getId_centre());
+        // Inserting Row
+        db.insert(TABLE_INFERMIER, null, values);
+        //db.close();
+    }
+
+
 public void addCabine(Cabine cabine)
 {
     SQLiteDatabase db = this.getWritableDatabase();
@@ -373,6 +398,7 @@ public void addVaccin(Vaccin vaccin)
 
 
 public void addStatus(Status status)
+
 {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
@@ -414,6 +440,7 @@ public void addReservation(Reservation reservation)
                 COLUMN_PATIENT_ID,
                 COLUMN_PATIENT_NOM,
                 COLUMN_PATIENT_PRENOM,
+                COLUMN_PATIENT_CIN,
                 COLUMN_PATIENT_EMAIL,
                 COLUMN_PATIENT_PASSWORD,
                 COLUMN_PATIENT_PHONE,
@@ -448,8 +475,10 @@ public void addReservation(Reservation reservation)
             do {
                 Patient PATIENT = new Patient();
                 PATIENT.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ID))));
-                PATIENT.setName(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
+                PATIENT.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
+                PATIENT.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PRENOM)));
                 PATIENT.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_EMAIL)));
+                PATIENT.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_CIN)));
                 PATIENT.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PASSWORD)));
                 PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
                 PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
@@ -473,7 +502,7 @@ public void addReservation(Reservation reservation)
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_PATIENT_NOM, PATIENT.getName());
+        values.put(COLUMN_PATIENT_NOM, PATIENT.getNom());
         values.put(COLUMN_PATIENT_EMAIL, PATIENT.getEmail());
         values.put(COLUMN_PATIENT_PASSWORD, PATIENT.getPassword());
         values.put(COLUMN_PATIENT_BIRTHDAY,PATIENT.getBirthday());
@@ -486,6 +515,8 @@ public void addReservation(Reservation reservation)
                 new String[]{String.valueOf(PATIENT.getId())});
         db.close();
     }
+
+
 
     /**
      * This method is to delete PATIENTrecord
