@@ -15,23 +15,7 @@ public class Patient {
     private int id_vaccin;
     private int id_centre;
 
-    @Override
-    public String toString() {
-        return "Patient{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                ", cin='" + cin + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", password='" + password + '\'' +
-                ", status=" + status +
-                ", nbr_vaccin=" + nbr_vaccin +
-                ", id_vaccin=" + id_vaccin +
-                ", id_centre=" + id_centre +
-                '}';
-    }
+
 
     public Patient() {
     }

@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Evax.db";
 
 
-                 /*  Tables list  */
+    /*  Tables list  */
     // PATIENT table name
     private static final String TABLE_PATIENT= "patient";
     // MEDECIN table name
@@ -346,10 +346,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ADMIN_PASSWORD,administrateur.getPassword());
 
 
-    // Inserting Row
+        // Inserting Row
         db.insert(TABLE_ADMINISTRATEUR, null, values);
-    //db.close();
-}
+        //db.close();
+    }
 
 
     public void addINFERMIER(Infermier INFERMIER) {
@@ -370,63 +370,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-public void addCabine(Cabine cabine)
-{
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_CABINE_NAME,cabine.getNom());
-    values.put(COLUMN_CABINE_CENTRE,cabine.getId_centre());
-    // Inserting Row
-    db.insert(TABLE_CENTRE, null, values);
-    //db.close();
-}
+    public void addCabine(Cabine cabine)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CABINE_NAME,cabine.getNom());
+        values.put(COLUMN_CABINE_CENTRE,cabine.getId_centre());
+        // Inserting Row
+        db.insert(TABLE_CENTRE, null, values);
+        //db.close();
+    }
 
 
-public void addVaccin(Vaccin vaccin)
-{
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_VACCIN_NAME,vaccin.getNom());
-    values.put(COLUMN_VACCIN_REF,vaccin.getRef());
-    values.put(COLUMN_VACCIN_QTE,vaccin.getQte());
+    public void addVaccin(Vaccin vaccin)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_VACCIN_NAME,vaccin.getNom());
+        values.put(COLUMN_VACCIN_REF,vaccin.getRef());
+        values.put(COLUMN_VACCIN_QTE,vaccin.getQte());
 
-    // Inserting Row
-    db.insert(TABLE_VACCIN, null, values);
-    //db.close();
+        // Inserting Row
+        db.insert(TABLE_VACCIN, null, values);
+        //db.close();
 
-}
-
-
-public void addStatus(Status status)
-
-{
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_STATUS_NAME,status.getStatus());
-
-    // Inserting Row
-    db.insert(TABLE_STATUS, null, values);
-    //db.close();
-
-}
+    }
 
 
+    public void addStatus(Status status)
+
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS_NAME,status.getStatus());
+
+        // Inserting Row
+        db.insert(TABLE_STATUS, null, values);
+        //db.close();
+
+    }
 
 
-public void addReservation(Reservation reservation)
-{
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_RESERVATION_DATE,reservation.getDate());
-    values.put(COLUMN_RESERVATION_INFERMIER_ID,reservation.getId_infermier());
-    values.put(COLUMN_PATIENT_VACCIN_ID,reservation.getId_medecin());
-    values.put(COLUMN_RESERVATION_MEDECIN_ID,reservation.getId_medecin());
 
-    // Inserting Row
-    db.insert(TABLE_RESERVATION, null, values);
-    //db.close();
 
-}
+    public void addReservation(Reservation reservation)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_RESERVATION_DATE,reservation.getDate());
+        values.put(COLUMN_RESERVATION_INFERMIER_ID,reservation.getId_infermier());
+        values.put(COLUMN_PATIENT_VACCIN_ID,reservation.getId_medecin());
+        values.put(COLUMN_RESERVATION_MEDECIN_ID,reservation.getId_medecin());
+
+        // Inserting Row
+        db.insert(TABLE_RESERVATION, null, values);
+        //db.close();
+
+    }
 
 
     /**
@@ -444,6 +444,7 @@ public void addReservation(Reservation reservation)
                 COLUMN_PATIENT_EMAIL,
                 COLUMN_PATIENT_PASSWORD,
                 COLUMN_PATIENT_PHONE,
+                COLUMN_PATIENT_STATUS,
                 COLUMN_PATIENT_BIRTHDAY,
                 COLUMN_PATIENT_NBRVCCN
 
@@ -488,11 +489,89 @@ public void addReservation(Reservation reservation)
             } while (cursor.moveToNext());
         }
         cursor.close();
-       // db.close();
+        // db.close();
 
         // return PATIENTlist
         return PATIENTList;
     }
+
+
+
+
+
+
+
+
+
+    public List<Patient> getAllPatientByStatus(int s) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_PATIENT_ID,
+                COLUMN_PATIENT_NOM,
+                COLUMN_PATIENT_PRENOM,
+                COLUMN_PATIENT_CIN,
+                COLUMN_PATIENT_EMAIL,
+                COLUMN_PATIENT_PASSWORD,
+                COLUMN_PATIENT_PHONE,
+                COLUMN_PATIENT_STATUS,
+                COLUMN_PATIENT_BIRTHDAY,
+                COLUMN_PATIENT_NBRVCCN
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_PATIENT_NOM + " ASC";
+        List<Patient> PATIENTList = new ArrayList<Patient>();
+        String selection = COLUMN_PATIENT_STATUS + " = ?";
+        int[] selectionArgs = {s};
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.query(TABLE_PATIENT, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Patient PATIENT = new Patient();
+                PATIENT.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ID))));
+                PATIENT.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
+                PATIENT.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PRENOM)));
+                PATIENT.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_EMAIL)));
+                PATIENT.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_CIN)));
+                PATIENT.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PASSWORD)));
+                PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
+                PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
+                PATIENT.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PHONE)));
+                // Adding PATIENT record to list
+                PATIENTList.add(PATIENT);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // db.close();
+
+        // return PATIENTlist
+        return PATIENTList;
+    }
+
+
+
+
+
+
+
+
 
     /**
      * This method to update PATIENTrecord
@@ -558,7 +637,7 @@ public void addReservation(Reservation reservation)
          * SQL query equivalent to this query function is
          * SELECT PATIENT_id FROM PATIENTWHERE PATIENT_email = 'jack@androidtutorialshub.com';
          */
-       Cursor cursor = db.query(TABLE_PATIENT, //Table to query
+        Cursor cursor = db.query(TABLE_PATIENT, //Table to query
                 columns,                    //columns to return
                 selection,                  //columns for the WHERE clause
                 selectionArgs,              //The values for the WHERE clause
@@ -575,14 +654,14 @@ public void addReservation(Reservation reservation)
 
         return false;
     }
-/*
-    /**
-     * This method to check PATIENT exist or not
-     *
-     * @param email
-     * @param password
-     * @return true/false
-     */
+    /*
+        /**
+         * This method to check PATIENT exist or not
+         *
+         * @param email
+         * @param password
+         * @return true/false
+         */
     public boolean checkPATIENT(String email, String password) {
 
         // array of columns to fetch
