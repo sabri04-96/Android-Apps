@@ -1,27 +1,27 @@
 package com.example.androidproject.Validations;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidproject.Classes.Patient;
 import com.example.androidproject.Database.DatabaseHelper;
-import com.example.androidproject.IndexMedecin;
-import com.example.androidproject.LoginActivity;
 import com.example.androidproject.R;
 
 import java.util.List;
 
-public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHolder> {
     private Context context;
     private List<Patient> patients;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -29,7 +29,8 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView nom;
         TextView prenom;
         Patient patient;
-        Button confirm;
+        ImageButton confirm;
+
 
         public ViewHolder(View itemView)
         {
@@ -38,14 +39,14 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             cin = (TextView) itemView.findViewById(R.id.cin);
             nom = (TextView) itemView.findViewById(R.id.patient_name);
             prenom = (TextView) itemView.findViewById(R.id.patient_prenom);
-            confirm = (Button) itemView.findViewById(R.id.btn_confirm);
+            confirm = (ImageButton) itemView.findViewById(R.id.btn_confirm);
 
         }
     }
 
 
 
-    public  PostAdapter(Context c, List<Patient> patientList)
+    public MedecinAdapter(Context c, List<Patient> patientList)
     {
         this.context=c;
         patients = patientList;
@@ -60,7 +61,7 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder( PostAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(MedecinAdapter.ViewHolder holder, int position) {
         Patient p = patients.get(position);
         holder.cin.setText(p.getCin());
         holder.nom.setText(p.getNom());
@@ -70,8 +71,10 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             public void onClick(View v) {
                 Log.d("Reading: ", p.toString());
                 DatabaseHelper db=new DatabaseHelper(context);
-                p.setStatus(2);
+                p.setStatus(3);
                 db.updatePATIENT(p);
+                Toast.makeText(context, "Ce patient peut poursuivre son parcours vers l'infermier ", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

@@ -36,9 +36,9 @@ public class login_medecin extends AppCompatActivity {
         db.addVaccin(vaccin);
         db.addCentre(c);
         db.addStatus(s1);
-         Medecin m = new  Medecin(1,3310,"072040","test","test","test","222222","04/03/33","gen","test",1);
-         Patient p = new  Patient(1, "sabri", "Fetoui","072040", "hello@test.com", "22222222", "22/02/33", "Hello", 1, 0, 1, 1);
-         Patient p2 = new  Patient(2, "Mouadh", "Aboud","030303", "test@test.com", "22222222", "22/02/33", "Test", 1, 0, 1, 1);
+         Medecin m = new  Medecin(1,3310,"072040","test","test","test@test.tn","222222","04/03/33","gen","test",1);
+         Patient p = new  Patient(1, "sabri", "Fetoui","072040", "hello@test.com", "22222222", "22/02/33", "Hello", 2, 0, 1, 1);
+         Patient p2 = new  Patient(2, "Mouadh", "Aboud","030303", "test@test.com", "22222222", "22/02/33", "Test", 2, 0, 1, 1);
          Infermier i = new  Infermier(1,222222,"test","test","test","02/02/02","test","2333333","2233",1);
         db.addINFERMIER(i);
         db.addMedecin(m);
@@ -73,15 +73,15 @@ public class login_medecin extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isExist = db.checkPATIENT(edtUsername.getText().toString(), edtPassword.getText().toString());
+                boolean isExist = db.checkMedecin(edtUsername.getText().toString(), edtPassword.getText().toString());
                 Log.d("Reading: ", "Reading all contacts..");
-                List< Patient> patientList = db.getAllPATIENT();
+                List< Medecin> MedList = db.getAllmedecin();
 
-                for ( Patient cn : patientList) {
+                for ( Medecin cn : MedList) {
                     String log = "Id: " + cn.getId() + " ,Name: " + cn.getNom() + " ,Prenom: " +
                             cn.getPrenom();
                     // Writing Contacts to log
-                    Log.d("Name: ", log);}
+                }
                 if (isExist) {
                     Context context = getApplicationContext();
                     CharSequence text = "Login succeffuly";

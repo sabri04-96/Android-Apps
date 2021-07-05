@@ -3,6 +3,8 @@ package com.example.androidproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SearchView;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 
 import com.example.androidproject.Classes.Patient;
 import com.example.androidproject.Database.DatabaseHelper;
-import com.example.androidproject.Validations.PostAdapter;
+import com.example.androidproject.Validations.MedecinAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 public class IndexMedecin extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private PostAdapter postAdapter;
+    private MedecinAdapter medecinAdapter;
     private SearchView searchView;
     private ArrayList<Patient> patients;
     DatabaseHelper db = new DatabaseHelper(this);
@@ -35,11 +37,15 @@ public class IndexMedecin extends AppCompatActivity {
         Log.d("Reading: ", "Reading all contacts..");
         List<Patient> patientList = db.getAllPatientByStatus(2);
 
-        postAdapter = new PostAdapter(this,patientList);
-
+        medecinAdapter = new MedecinAdapter(this,patientList);
+        for (Patient cn : patientList) {
+            String log = "Id: " + cn.getId() + " ,Name: " + cn.getNom() + " ,Prenom: " +
+                    cn.getPrenom();
+            // Writing Contacts to log
+            Log.d("Name: ", log);}
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerView.setAdapter(postAdapter);
+        recyclerView.setAdapter(medecinAdapter);
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

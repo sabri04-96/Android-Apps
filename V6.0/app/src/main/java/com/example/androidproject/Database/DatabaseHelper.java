@@ -496,9 +496,137 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public List<Infermier> getAllInfermier() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_INFERMIER_ID,
+                COLUMN_INFERMIER_CIN,
+                COLUMN_INFERMIER_EMAIL,
+                COLUMN_INFERMIER_DATENAISSANCE,
+                COLUMN_INFERMIER_MATRICULE,
+                COLUMN_INFERMIER_NOM,
+                COLUMN_INFERMIER_PRENOM,
+                COLUMN_INFERMIER_PASSWORD,
+                COLUMN_INFERMIER_TELEPHONE,
+                COLUMN_INFERMIER_CENTRE_ID
+
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_INFERMIER_NOM + " ASC";
+        List<Infermier> infermiers = new ArrayList<Infermier>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.query(TABLE_INFERMIER, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Infermier infermier = new Infermier();
+                infermier.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_ID))));
+                infermier.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_NOM)));
+                infermier.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_PRENOM)));
+                infermier.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_EMAIL)));
+                infermier.setCin(cursor.getInt(cursor.getColumnIndex(COLUMN_INFERMIER_CIN)));
+                infermier.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_PASSWORD)));
+                infermier.setDate_naissance(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_DATENAISSANCE)));
+                infermier.setTelephone(cursor.getString(cursor.getColumnIndex(COLUMN_INFERMIER_TELEPHONE)));
+                infermier.setId_centre(cursor.getInt(cursor.getColumnIndex(COLUMN_INFERMIER_CENTRE_ID)));
+                // Adding PATIENT record to list
+                infermiers.add(infermier);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // db.close();
+
+        // return PATIENTlist
+        return infermiers;
+    }
 
 
 
+
+    /**
+     * This method is to fetch all PATIENTand return the list of PATIENTrecords
+     *
+     * @return list
+     */
+    public List<Medecin> getAllmedecin() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_MEDECIN_ID,
+                COLUMN_MEDECIN_NOM,
+                COLUMN_MEDECIN_PRENOM,
+                COLUMN_MEDECIN_cin,
+                COLUMN_MEDECIN_EMAIL,
+                COLUMN_MEDECIN_PASSWORD,
+                COLUMN_MEDECIN_BIRTHDAY,
+                COLUMN_MEDECIN_CENTRE_ID,
+                COLUMN_MEDECIN_MATRICULE,
+                COLUMN_MEDECIN_PHONE,
+                COLUMN_MEDECIN_SPECIALITE
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_MEDECIN_NOM + " ASC";
+        List<Medecin> MedList = new ArrayList<Medecin>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.query(TABLE_MEDECIN, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Medecin medecin = new Medecin();
+                medecin.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_ID))));
+                medecin.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_NOM)));
+                medecin.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PRENOM)));
+                medecin.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_EMAIL)));
+                medecin.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_cin)));
+                medecin.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PASSWORD)));
+                medecin.setDate_naissance(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_BIRTHDAY)));
+                medecin.setSpecialite(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_SPECIALITE)));
+                medecin.setTelephone(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PHONE)));
+                // Adding PATIENT record to list
+                MedList.add(medecin);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // db.close();
+
+        // return PATIENTlist
+        return MedList;
+    }
 
 
 
@@ -523,7 +651,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_PATIENT_NOM + " ASC";
         List<Patient> PATIENTList = new ArrayList<Patient>();
         String selection = COLUMN_PATIENT_STATUS + " = ?";
-        int[] selectionArgs = {s};
+        String[] selectionArgs = {Integer.toString(s)};
         SQLiteDatabase db = this.getReadableDatabase();
 
         // query the PATIENTtable
@@ -532,14 +660,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          * SQL query equivalent to this query function is
          * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
          */
-        Cursor cursor = db.query(TABLE_PATIENT, //Table to query
-                columns,    //columns to return
-                selection,        //columns for the WHERE clause
-                null,        //The values for the WHERE clause
-                null,       //group the rows
-                null,       //filter by row groups
-                sortOrder); //The sort order
-
+        Cursor cursor  = db.rawQuery("SELECT * FROM "+ TABLE_PATIENT +" WHERE "+ COLUMN_PATIENT_STATUS + " = ?",selectionArgs );
 
         // Traversing through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -554,6 +675,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
                 PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
                 PATIENT.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PHONE)));
+                PATIENT.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_STATUS)));
                 // Adding PATIENT record to list
                 PATIENTList.add(PATIENT);
             } while (cursor.moveToNext());
@@ -700,6 +822,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public boolean checkMedecin(String email, String password) {
+
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_MEDECIN_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_MEDECIN_EMAIL + " = ?" + " AND " + COLUMN_MEDECIN_PASSWORD + " = ?";
+
+        // selection arguments
+        String[] selectionArgs = {email, password};
+
+        // query PATIENTtable with conditions
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id FROM PATIENTWHERE PATIENT_email = 'jack@androidtutorialshub.com' AND PATIENT_password = 'qwerty';
+         */
+        Cursor cursor = db.query(TABLE_MEDECIN, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                       //filter by row groups
+                null);                      //The sort order
+
+        int cursorCount = cursor.getCount();
+
+        cursor.close();
+        //db.close();
+        if (cursorCount > 0) {
+            return true;
+        }
+
+        return false;
+    }
 
 }
 

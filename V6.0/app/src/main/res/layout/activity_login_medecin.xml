@@ -27,7 +27,7 @@
         android:fontFamily="cursive"
         android:gravity="center_horizontal"
         android:paddingVertical="35dp"
-        android:text="@string/login"
+        android:text="@string/Bienvenue"
         android:textAlignment="center"
         android:textColor="#1D4BE6"
         android:textSize="30dp" />

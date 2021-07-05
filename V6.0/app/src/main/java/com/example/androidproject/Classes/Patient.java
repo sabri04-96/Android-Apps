@@ -127,7 +127,26 @@ public class Patient {
         return id_centre;
     }
 
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", cin='" + cin + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", password='" + password + '\'' +
+                ", status=" + status +
+                ", nbr_vaccin=" + nbr_vaccin +
+                ", id_vaccin=" + id_vaccin +
+                ", id_centre=" + id_centre +
+                '}';
+    }
+
     public void setId_centre(int id_centre) {
         this.id_centre = id_centre;
     }
+
 }

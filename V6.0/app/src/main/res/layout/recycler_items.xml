@@ -52,7 +52,7 @@
         android:layout_toRightOf="@+id/image"
         android:textSize="20sp" />
 
-    <Button
+ <!--   <Button
         android:id="@+id/btn_confirm"
         android:text="Confirmer"
         android:layout_width="wrap_content"
@@ -64,6 +64,20 @@
         android:layout_toEndOf="@+id/patient_name"
         android:layout_toRightOf="@+id/patient_name"
         android:background="#8595B4"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        />
+-->
+    <ImageButton
+        android:id="@+id/btn_confirm"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="81dp"
+        android:layout_marginLeft="81dp"
+        android:layout_marginTop="37dp"
+        android:layout_toEndOf="@+id/patient_name"
+        android:layout_toRightOf="@+id/patient_name"
+        android:src="@drawable/test" />
+
 
 </RelativeLayout>

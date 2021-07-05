@@ -9,23 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidProject">
-        <activity android:name=".Staff" />
-        <activity android:name=".login_inferm" />
-        <activity android:name=".login_medecin" />
-        <activity android:name=".index_admin" />
-        <activity android:name=".login_admin" />
-        <activity android:name=".index_one" />
-        <activity android:name=".login_patient" />
-        <activity android:name=".Welcome" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".IndexMedecin" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Staff"></activity>
+        <activity android:name=".login_inferm"></activity>
+        <activity android:name=".login_medecin" ></activity>
+        <activity android:name=".index_admin" ></activity>
+        <activity android:name=".login_admin" ></activity>
+        <activity android:name=".index_one" ></activity>
+        <activity android:name=".login_patient" ></activity>
+        <activity android:name=".Welcome" ></activity>
+        <activity android:name=".LoginActivity" ></activity>
+        <activity android:name=".IndexMedecin" ></activity>
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-         
+        </activity>
     </application>
 
 </manifest>
