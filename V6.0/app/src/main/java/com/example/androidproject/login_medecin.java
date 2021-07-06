@@ -93,7 +93,7 @@ public class login_medecin extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                     Intent intent = new Intent(login_medecin.this, IndexMedecin.class);
-                    intent.putExtra("nom", edtUsername.getText().toString());
+                    intent.putExtra("email", edtUsername.getText().toString());
                     startActivity(intent);
                 } else {
 

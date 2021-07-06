@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 
+import com.example.androidproject.Classes.Medecin;
 import com.example.androidproject.Classes.Patient;
 import com.example.androidproject.Database.DatabaseHelper;
 import com.example.androidproject.Validations.MedecinAdapter;
@@ -34,15 +36,15 @@ public class IndexMedecin extends AppCompatActivity {
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setQueryHint("Search View");
         recyclerView = (RecyclerView) findViewById(R.id.RV_Patient);
-        Log.d("Reading: ", "Reading all contacts..");
-        List<Patient> patientList = db.getAllPatientByStatus(2);
+        Intent intent = getIntent();
+        String dataTransmited=intent.getStringExtra("email");
+        Log.d("test",dataTransmited);
+        Context context = getApplicationContext();
+        Medecin m = db.getMedecinByEmail(dataTransmited);
+        //List<Patient> patientList = db.getAllPatientByMedecin(2);
+        List<Patient> patients = db.getAllPatientByMedecin(m.getId());
+        medecinAdapter = new MedecinAdapter(this,patients);
 
-        medecinAdapter = new MedecinAdapter(this,patientList);
-        for (Patient cn : patientList) {
-            String log = "Id: " + cn.getId() + " ,Name: " + cn.getNom() + " ,Prenom: " +
-                    cn.getPrenom();
-            // Writing Contacts to log
-            Log.d("Name: ", log);}
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         recyclerView.setAdapter(medecinAdapter);

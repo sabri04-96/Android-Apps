@@ -751,7 +751,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
+    public Medecin getMedecinByID(String CIN) {
+        Medecin medecin = new Medecin();
 
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_MEDECIN_ID,
+                COLUMN_MEDECIN_MATRICULE,
+                COLUMN_MEDECIN_PHONE,
+                COLUMN_MEDECIN_SPECIALITE,
+                COLUMN_MEDECIN_cin,
+                COLUMN_MEDECIN_NOM,
+                COLUMN_MEDECIN_PRENOM,
+                COLUMN_MEDECIN_EMAIL,
+                COLUMN_MEDECIN_BIRTHDAY,
+                COLUMN_MEDECIN_PASSWORD,
+                COLUMN_MEDECIN_CENTRE_ID
+
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_MEDECIN_cin + " ASC";
+        String selection = COLUMN_MEDECIN_cin + " = ?";
+        String[] selectionArgs = {CIN};
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        Cursor cursor = db.rawQuery("select * from " + TABLE_MEDECIN+" where "+ COLUMN_MEDECIN_cin +" =?", new String[]{CIN});
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToLast()) {
+            medecin.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_ID))));
+            medecin.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_NOM)));
+            medecin.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PRENOM)));
+            medecin.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_EMAIL)));
+            medecin.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_cin)));
+            medecin.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PASSWORD)));
+            medecin.setDate_naissance(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_BIRTHDAY)));
+            medecin.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_MEDECIN_CENTRE_ID)));
+            medecin.setSpecialite(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_SPECIALITE)));
+            medecin.setTelephone(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PHONE)));
+            medecin.setMatricule(cursor.getInt(cursor.getColumnIndex(COLUMN_MEDECIN_MATRICULE)));
+            cursor.close();
+            // Adding PATIENT record to list
+            return medecin;
+        }
+        else {
+            Log.d("error","Patient not found ");
+            return medecin;
+        }
+
+        // db.close();
+
+    }
 
     /**
      * This method to update PATIENTrecord
@@ -1002,13 +1055,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
          */
 
-        Cursor cursor = db.rawQuery("select * from " + TABLE_PATIENT +
-                "INNER JOIN " + TABLE_RESERVATION +
-                "INNER JOIN " + TABLE_MEDECIN +
-                "WHERE "+ TABLE_PATIENT+"."+COLUMN_PATIENT_ID +  COLUMN_RESERVATION_PATIENT_ID  +
-                 "AND b."+COLUMN_RESERVATION_MEDECIN_ID+"= c."+COLUMN_MEDECIN_ID +
-                 "AND c."+ COLUMN_MEDECIN_ID +" = ?"
+        Cursor cursor = db.rawQuery("select *  FROM " + TABLE_PATIENT+
+                " INNER JOIN " + TABLE_RESERVATION +" ON " + TABLE_PATIENT +"."+COLUMN_PATIENT_ID+ "=" + TABLE_RESERVATION + "." + COLUMN_RESERVATION_PATIENT_ID+
+                " INNER JOIN " + TABLE_MEDECIN +" ON " + TABLE_MEDECIN +"."+COLUMN_MEDECIN_ID +"=" + TABLE_RESERVATION + "." + COLUMN_RESERVATION_MEDECIN_ID +
+                " WHERE "+COLUMN_MEDECIN_ID +"=?"+
+                " AND "+COLUMN_PATIENT_STATUS +"=" + 2
                 ,selectionArgs);
+
 
         // Traversing through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -1032,8 +1085,68 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // db.close();
 
         // return PATIENTlist
+        System.out.println(PATIENTList.toString());
         return PATIENTList;
     }
+
+
+
+
+    public Medecin getMedecinByEmail(String email) {
+        Medecin medecin = new Medecin();
+
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_MEDECIN_ID,
+                COLUMN_MEDECIN_MATRICULE,
+                COLUMN_MEDECIN_PHONE,
+                COLUMN_MEDECIN_SPECIALITE,
+                COLUMN_MEDECIN_cin,
+                COLUMN_MEDECIN_NOM,
+                COLUMN_MEDECIN_PRENOM,
+                COLUMN_MEDECIN_EMAIL,
+                COLUMN_MEDECIN_BIRTHDAY,
+                COLUMN_MEDECIN_PASSWORD,
+                COLUMN_MEDECIN_CENTRE_ID
+
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_MEDECIN_EMAIL + " ASC";
+        String selection = COLUMN_MEDECIN_EMAIL + " = ?";
+        String[] selectionArgs = {email};
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        Cursor cursor = db.rawQuery("select * from " + TABLE_MEDECIN+" where "+ COLUMN_MEDECIN_EMAIL +" =?", new String[]{email});
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToLast()) {
+            medecin.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_ID))));
+            medecin.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_NOM)));
+            medecin.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PRENOM)));
+            medecin.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_EMAIL)));
+            medecin.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_cin)));
+            medecin.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PASSWORD)));
+            medecin.setDate_naissance(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_BIRTHDAY)));
+            medecin.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_MEDECIN_CENTRE_ID)));
+            medecin.setSpecialite(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_SPECIALITE)));
+            medecin.setTelephone(cursor.getString(cursor.getColumnIndex(COLUMN_MEDECIN_PHONE)));
+            medecin.setMatricule(cursor.getInt(cursor.getColumnIndex(COLUMN_MEDECIN_MATRICULE)));
+            cursor.close();
+            // Adding PATIENT record to list
+            return medecin;
+        }
+        else {
+            Log.d("error","Patient not found ");
+            return medecin;
+        }
+
+        // db.close();
+
+    }
+
 
 
 }
