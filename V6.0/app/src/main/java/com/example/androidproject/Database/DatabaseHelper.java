@@ -1148,6 +1148,112 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public List<Centre> getAllCentre() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_CENTRE_ID,
+                COLUMN_CENTRE_NAME,
+                COLUMN_CENTRE_EMPLACEMENT,
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_CENTRE_NAME + " ASC";
+        List<Centre> centres = new ArrayList<Centre>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.query(TABLE_CENTRE, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Centre centre = new Centre ();
+                centre.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_CENTRE_ID))));
+                centre.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_CENTRE_NAME)));
+                centre.setEmplacement(cursor.getString(cursor.getColumnIndex(COLUMN_CENTRE_EMPLACEMENT)));
+                // Adding PATIENT record to list
+                centres.add(centre);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // db.close();
+
+        // return PATIENTlist
+        return centres;
+    }
+
+
+
+    public Patient getPatientByEmail(String email) {
+        Patient PATIENT = new Patient();
+
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_PATIENT_ID,
+                COLUMN_PATIENT_NOM,
+                COLUMN_PATIENT_PRENOM,
+                COLUMN_PATIENT_CIN,
+                COLUMN_PATIENT_EMAIL,
+                COLUMN_PATIENT_PASSWORD,
+                COLUMN_PATIENT_PHONE,
+                COLUMN_PATIENT_STATUS,
+                COLUMN_PATIENT_BIRTHDAY,
+                COLUMN_PATIENT_NBRVCCN
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_PATIENT_CIN + " ASC";
+        String selection = COLUMN_PATIENT_EMAIL + " = ?";
+        String[] selectionArgs = {email};
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.rawQuery("select * from " + TABLE_PATIENT+" where "+ COLUMN_PATIENT_EMAIL +" =?", new String[]{email});
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToLast()) {
+            PATIENT.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ID))));
+            PATIENT.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
+            PATIENT.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PRENOM)));
+            PATIENT.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_EMAIL)));
+            PATIENT.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_CIN)));
+            PATIENT.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PASSWORD)));
+            PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
+            PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
+            PATIENT.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PHONE)));
+            PATIENT.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_STATUS)));
+            cursor.close();
+            // Adding PATIENT record to list
+            return PATIENT;
+        }
+        else {
+            Log.d("error","Patient not found ");
+            return PATIENT;
+        }
+
+        // db.close();
+
+    }
 
 }
 
