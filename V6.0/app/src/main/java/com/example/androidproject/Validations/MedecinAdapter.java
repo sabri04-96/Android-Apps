@@ -1,11 +1,11 @@
 package com.example.androidproject.Validations;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +16,7 @@ import com.example.androidproject.Classes.Patient;
 import com.example.androidproject.Database.DatabaseHelper;
 import com.example.androidproject.R;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHolder> {
@@ -29,7 +30,7 @@ public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHold
         TextView nom;
         TextView prenom;
         Patient patient;
-        ImageButton confirm;
+        ImageButton confirm,update;
 
 
         public ViewHolder(View itemView)
@@ -40,7 +41,7 @@ public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHold
             nom = (TextView) itemView.findViewById(R.id.patient_name);
             prenom = (TextView) itemView.findViewById(R.id.patient_prenom);
             confirm = (ImageButton) itemView.findViewById(R.id.btn_confirm);
-
+            update = (ImageButton) itemView.findViewById(R.id.btn_update);
         }
     }
 
@@ -56,7 +57,7 @@ public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.recycler_items,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.medecin_items,parent,false);
         return new ViewHolder(v);
     }
 
@@ -66,6 +67,14 @@ public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHold
         holder.cin.setText(p.getCin());
         holder.nom.setText(p.getNom());
         holder.prenom.setText(p.getPrenom());
+        holder.update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentX = new Intent(v.getContext(), UpdateRDV.class);
+                intentX.putExtra("cin", p.getCin());
+                context.startActivity(intentX);
+            }
+        });
         holder.confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +86,7 @@ public class MedecinAdapter extends RecyclerView.Adapter<MedecinAdapter.ViewHold
 
             }
         });
+
     }
 
     @Override

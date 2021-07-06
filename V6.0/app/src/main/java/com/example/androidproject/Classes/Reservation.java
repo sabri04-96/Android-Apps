@@ -21,6 +21,18 @@ public class Reservation {
         this.id_centre=id_centre;
     }
 
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", date='" + date + '\'' +
+                ", id_patient=" + id_patient +
+                ", id_medecin=" + id_medecin +
+                ", id_infermier=" + id_infermier +
+                ", id_centre=" + id_centre +
+                '}';
+    }
+
     public int getId_centre() {
         return id_centre;
     }

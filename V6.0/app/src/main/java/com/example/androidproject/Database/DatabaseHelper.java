@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.EditText;
 
 import com.example.androidproject.Classes.Administrateur;
 import com.example.androidproject.Classes.Cabine;
@@ -419,8 +421,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_RESERVATION_DATE,reservation.getDate());
         values.put(COLUMN_RESERVATION_INFERMIER_ID,reservation.getId_infermier());
-        values.put(COLUMN_PATIENT_VACCIN_ID,reservation.getId_medecin());
         values.put(COLUMN_RESERVATION_MEDECIN_ID,reservation.getId_medecin());
+        values.put(COLUMN_RESERVATION_CENTRE_ID,reservation.getId_centre());
+        values.put(COLUMN_RESERVATION_PATIENT_ID,reservation.getId_patient());
 
         // Inserting Row
         db.insert(TABLE_RESERVATION, null, values);
@@ -688,7 +691,62 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public Patient getPatientByID(String CIN) {
+        Patient PATIENT = new Patient();
 
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_PATIENT_ID,
+                COLUMN_PATIENT_NOM,
+                COLUMN_PATIENT_PRENOM,
+                COLUMN_PATIENT_CIN,
+                COLUMN_PATIENT_EMAIL,
+                COLUMN_PATIENT_PASSWORD,
+                COLUMN_PATIENT_PHONE,
+                COLUMN_PATIENT_STATUS,
+                COLUMN_PATIENT_BIRTHDAY,
+                COLUMN_PATIENT_NBRVCCN
+
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_PATIENT_CIN + " ASC";
+        String selection = COLUMN_PATIENT_CIN + " = ?";
+        String[] selectionArgs = {CIN};
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.rawQuery("select * from " + TABLE_PATIENT+" where "+ COLUMN_PATIENT_CIN +" =?", new String[]{CIN});
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToLast()) {
+            PATIENT.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ID))));
+            PATIENT.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
+            PATIENT.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PRENOM)));
+            PATIENT.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_EMAIL)));
+            PATIENT.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_CIN)));
+            PATIENT.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PASSWORD)));
+            PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
+            PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
+            PATIENT.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PHONE)));
+            PATIENT.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_STATUS)));
+            cursor.close();
+            // Adding PATIENT record to list
+            return PATIENT;
+        }
+        else {
+            Log.d("error","Patient not found ");
+            return PATIENT;
+        }
+
+        // db.close();
+
+    }
 
 
 
@@ -859,6 +917,124 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return false;
     }
+
+    public void updateRDVDate(Reservation r) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_RESERVATION_DATE, r.getDate());
+        values.put(COLUMN_RESERVATION_MEDECIN_ID, r.getId_medecin());
+        values.put(COLUMN_RESERVATION_INFERMIER_ID, r.getId_infermier());
+        values.put(COLUMN_RESERVATION_CENTRE_ID,r.getId_centre());
+        values.put(COLUMN_RESERVATION_ID,r.getId());
+
+
+        // updating row
+        db.update(TABLE_RESERVATION, values, COLUMN_RESERVATION_ID + " = ?",
+                new String[]{String.valueOf(r.getId())});
+        db.close();
+    }
+
+
+
+    public Reservation getReservation(String id) {
+        Reservation r = new Reservation();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+        Cursor cursor = db.rawQuery("select * from " + TABLE_RESERVATION+" a INNER JOIN " + TABLE_PATIENT +" b  WHERE a."+ COLUMN_RESERVATION_PATIENT_ID  +" = b."+COLUMN_PATIENT_ID+" AND b."+ COLUMN_PATIENT_CIN +" = ?",new String[]{id});
+
+        if (cursor.getCount() <= 0)
+        {
+            Log.d("problem ","i got nothing ");
+        } else {
+            // Traversing through all rows and adding to list
+            if (cursor.moveToLast()) {
+                r.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_RESERVATION_ID))));
+                r.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_RESERVATION_DATE)));
+                r.setId_centre(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_RESERVATION_CENTRE_ID))));
+                r.setId_infermier(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_RESERVATION_INFERMIER_ID))));
+                r.setId_medecin(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_RESERVATION_MEDECIN_ID))));
+                r.setId_patient(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_RESERVATION_PATIENT_ID))));
+            }
+        }
+            System.out.println(r.getId());
+
+        return r;
+
+
+        // db.close();
+
+    }
+
+
+
+    public List<Patient> getAllPatientByMedecin(int s) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_PATIENT_ID,
+                COLUMN_PATIENT_NOM,
+                COLUMN_PATIENT_PRENOM,
+                COLUMN_PATIENT_CIN,
+                COLUMN_PATIENT_EMAIL,
+                COLUMN_PATIENT_PASSWORD,
+                COLUMN_PATIENT_PHONE,
+                COLUMN_PATIENT_STATUS,
+                COLUMN_PATIENT_BIRTHDAY,
+                COLUMN_PATIENT_NBRVCCN
+
+        };
+        // sorting orders
+        String sortOrder = COLUMN_PATIENT_NOM + " ASC";
+        List<Patient> PATIENTList = new ArrayList<Patient>();
+        String selection = COLUMN_PATIENT_STATUS + " = ?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] selectionArgs = {Integer.toString(s)};
+
+        // query the PATIENTtable
+        /**
+         * Here query function is used to fetch records from PATIENTtable this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT PATIENT_id,PATIENT_name,PATIENT_email,PATIENT_password FROM PATIENTORDER BY PATIENT_name;
+         */
+
+        Cursor cursor = db.rawQuery("select * from " + TABLE_PATIENT +
+                "INNER JOIN " + TABLE_RESERVATION +
+                "INNER JOIN " + TABLE_MEDECIN +
+                "WHERE "+ TABLE_PATIENT+"."+COLUMN_PATIENT_ID +  COLUMN_RESERVATION_PATIENT_ID  +
+                 "AND b."+COLUMN_RESERVATION_MEDECIN_ID+"= c."+COLUMN_MEDECIN_ID +
+                 "AND c."+ COLUMN_MEDECIN_ID +" = ?"
+                ,selectionArgs);
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Patient PATIENT = new Patient();
+                PATIENT.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_ID))));
+                PATIENT.setNom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_NOM)));
+                PATIENT.setPrenom(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PRENOM)));
+                PATIENT.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_EMAIL)));
+                PATIENT.setCin(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_CIN)));
+                PATIENT.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PASSWORD)));
+                PATIENT.setBirthday(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_BIRTHDAY)));
+                PATIENT.setNbr_vaccin(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_NBRVCCN)));
+                PATIENT.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_PATIENT_PHONE)));
+                PATIENT.setStatus(cursor.getInt(cursor.getColumnIndex(COLUMN_PATIENT_STATUS)));
+                // Adding PATIENT record to list
+                PATIENTList.add(PATIENT);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // db.close();
+
+        // return PATIENTlist
+        return PATIENTList;
+    }
+
 
 }
 

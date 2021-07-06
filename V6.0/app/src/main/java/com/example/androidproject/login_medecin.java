@@ -15,6 +15,7 @@ import com.example.androidproject.Classes.Centre;
 import com.example.androidproject.Classes.Infermier;
 import com.example.androidproject.Classes.Medecin;
 import com.example.androidproject.Classes.Patient;
+import com.example.androidproject.Classes.Reservation;
 import com.example.androidproject.Classes.Status;
 import com.example.androidproject.Classes.Vaccin;
 import com.example.androidproject.Database.DatabaseHelper;
@@ -40,7 +41,9 @@ public class login_medecin extends AppCompatActivity {
          Patient p = new  Patient(1, "sabri", "Fetoui","072040", "hello@test.com", "22222222", "22/02/33", "Hello", 2, 0, 1, 1);
          Patient p2 = new  Patient(2, "Mouadh", "Aboud","030303", "test@test.com", "22222222", "22/02/33", "Test", 2, 0, 1, 1);
          Infermier i = new  Infermier(1,222222,"test","test","test","02/02/02","test","2333333","2233",1);
-        db.addINFERMIER(i);
+        Reservation reservation = new Reservation (1,"03/03/2003",1,1,1,1);
+        db.addReservation(reservation);
+          db.addINFERMIER(i);
         db.addMedecin(m);
         db.addPATIENT(p);
         db.addPATIENT(p2);
