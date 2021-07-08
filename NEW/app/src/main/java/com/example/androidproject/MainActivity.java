@@ -7,6 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.androidproject.Classes.Centre;
+import com.example.androidproject.Classes.Infermier;
+import com.example.androidproject.Classes.Medecin;
+import com.example.androidproject.Classes.Patient;
+import com.example.androidproject.Classes.Reservation;
+import com.example.androidproject.Classes.Status;
+import com.example.androidproject.Classes.Vaccin;
+import com.example.androidproject.Database.DatabaseHelper;
+
 import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,8 +24,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        DatabaseHelper db = new DatabaseHelper(this);
         Button Btn_staff, Btn_Cntct, Btn_Patient;
+
+
+
 
 
         Btn_staff = (Button) findViewById(R.id.Btn_staff);

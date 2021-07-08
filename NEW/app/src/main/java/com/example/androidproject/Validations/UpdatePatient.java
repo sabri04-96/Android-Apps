@@ -18,22 +18,20 @@ public class UpdatePatient extends AppCompatActivity {
     Patient P;
     EditText cin,nom,prenom,date_naiss,email,phone,password;
     DatabaseHelper db = new DatabaseHelper(this);
-    private Button btn;
+    private Button btn,btnres;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_update_patient);
-        cin = (EditText)findViewById(R.id.TxtCinP);
-        nom = (EditText)findViewById(R.id.TxtVnom);
-        prenom = (EditText)findViewById(R.id.TxtVPrenom);
-        date_naiss = (EditText)findViewById(R.id.editTextDate);
-        email = (EditText)findViewById(R.id.editTxtVemail);
-        phone = (EditText)findViewById(R.id.edittxtVphone);
-        password = (EditText)findViewById(R.id.edittxtVpasswd);
-
-        btn = (Button) findViewById(R.id.btn_confirmUp);
+        cin = (EditText)findViewById(R.id.editTextTextPersonCin);
+        nom = (EditText)findViewById(R.id.editTextTextPersonName);
+        prenom = (EditText)findViewById(R.id.editTextTextPersonPrenom);
+        date_naiss = (EditText)findViewById(R.id.editTextTextPersonBirthday);
+        email = (EditText)findViewById(R.id.editTextTextPersonEmail);
+        phone = (EditText)findViewById(R.id.editTextTextPersonPhone);
+        btn = (Button) findViewById(R.id.ConfirmationBtn);
 
         Intent intent = getIntent();
         String dataTransmited=intent.getStringExtra("cin");

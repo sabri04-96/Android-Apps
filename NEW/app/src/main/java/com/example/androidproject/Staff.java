@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.androidproject.Classes.Infermier;
+import com.example.androidproject.Database.DatabaseHelper;
+
 public class Staff extends AppCompatActivity {
 
 
@@ -14,7 +17,7 @@ public class Staff extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff);
-
+        DatabaseHelper db = new DatabaseHelper(this);
         Button Btn_admin, Btn_Mdcn, Btn_Infr;
 
 
@@ -25,7 +28,7 @@ public class Staff extends AppCompatActivity {
         Btn_admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Staff.this, index_admin.class);
+                Intent intent = new Intent(Staff.this, login_admin.class);
                 startActivity(intent);
 
             }

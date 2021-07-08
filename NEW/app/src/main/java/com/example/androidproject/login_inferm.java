@@ -60,11 +60,11 @@ public class login_inferm extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isExist = db.checkMedecin(edtUsername.getText().toString(), edtPassword.getText().toString());
+                boolean isExist = db.checkInf(edtUsername.getText().toString(), edtPassword.getText().toString());
                 Log.d("Reading: ", "Reading all contacts..");
-                List< Medecin> MedList = db.getAllmedecin();
+                List< Infermier> InfList = db.getAllInfermier();
 
-                for ( Medecin cn : MedList) {
+                for ( Infermier cn : InfList) {
                     String log = "Id: " + cn.getId() + " ,Name: " + cn.getNom() + " ,Prenom: " +
                             cn.getPrenom();
                     // Writing Contacts to log
@@ -73,11 +73,10 @@ public class login_inferm extends AppCompatActivity {
                     Context context = getApplicationContext();
                     CharSequence text = "Login succeffuly";
                     int duration = Toast.LENGTH_SHORT;
-
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
-                    Intent intent = new Intent(login_inferm.this, index_patient.class);
-                    intent.putExtra("nom", edtUsername.getText().toString());
+                    Intent intent = new Intent(login_inferm.this, index_infermier.class);
+                    intent.putExtra("email", edtUsername.getText().toString());
                     startActivity(intent);
                 } else {
 
